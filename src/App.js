@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import MovieDetailsPage from "./pages/MovieDetailsPage";
 import FavoritesPage from "./pages/FavoritesPage";
-// import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar/Navbar";
 import { Container } from "@mui/material"; // For basic layout centering/padding
 import "./App.css";
 
 function App() {
   return (
     <Router>
-      {/* <Navbar /> */}
+      <Navbar />
       <Container sx={{ mt: 4, mb: 4 }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
