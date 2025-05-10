@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Paper, InputBase, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
-const SearchBar = ({ onSearch }) => {
-  const [query, setQuery] = useState("");
+const SearchBar = ({ initialQuery, onSearch }) => {
+  const [query, setQuery] = useState(initialQuery || "");
+
+  useEffect(() => {
+    setQuery(initialQuery || "");
+  }, [initialQuery]);
 
   const handleInputChange = (event) => {
     setQuery(event.target.value);
@@ -13,6 +17,8 @@ const SearchBar = ({ onSearch }) => {
     event.preventDefault();
     if (query.trim()) {
       onSearch(query.trim());
+    } else {
+      onSearch(""); // Clear search results if the query is empty
     }
   };
 

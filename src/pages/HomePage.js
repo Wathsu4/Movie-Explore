@@ -12,36 +12,69 @@ const HomePage = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
+
+  // Manage search bar input text here, to prefill from localStorage
+  const [searchBarQuery, setSearchBarQuery] = useState(() => {
+    return localStorage.getItem("lastSearchQuery") || "";
+  });
+
   const [currentSearchQuery, setCurrentSearchQuery] = useState(""); // To know if we are showing search results
 
-  // Fetch Trending Movies
+  // Fetch Trending Movies or Last Search on Initial Load
   useEffect(() => {
-    const getTrending = async () => {
-      try {
-        setTrendingLoading(true);
-        setTrendingError(null);
-        const movies = await fetchTrendingMovies();
-        setTrendingMovies(movies);
-      } catch (err) {
-        setTrendingError(
-          "Failed to fetch trending movies. Please try again later."
-        );
-        console.error(err);
-      } finally {
-        setTrendingLoading(false);
-      }
-    };
-    if (!currentSearchQuery) {
-      getTrending();
+    const initialLastSearch = localStorage.getItem("lastSearchQuery");
+    if (initialLastSearch) {
+      handleSearch(initialLastSearch, true);
+    } else if (!currentSearchQuery) {
+      // If no last search, fetch trending
+      getTrendingMovies(); // Assuming you have this function
+    }
+  }, []); // Run once on mount
+
+  // Fetch Trending Movies
+
+  const getTrendingMovies = async () => {
+    try {
+      setTrendingLoading(true);
+      setTrendingError(null);
+      const movies = await fetchTrendingMovies();
+      setTrendingMovies(movies);
+    } catch (err) {
+      setTrendingError(
+        "Failed to fetch trending movies. Please try again later."
+      );
+      console.error(err);
+    } finally {
+      setTrendingLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!currentSearchQuery && !localStorage.getItem("lastSearchQuery")) {
+      getTrendingMovies();
     }
   }, [currentSearchQuery]);
 
   // Handle Search
-  const handleSearch = async (query) => {
-    setCurrentSearchQuery(query); // Set the current query
+  const handleSearch = async (query, isInitialLoad = false) => {
+    if (!query.trim()) {
+      setCurrentSearchQuery(""); // Clear results if query is empty
+      setSearchResults([]);
+      localStorage.removeItem("lastSearchQuery"); // Remove from local storage
+      // Optionally, call getTrendingMovies() here if you want to show trending
+      return;
+    }
+
+    setCurrentSearchQuery(query);
+    if (!isInitialLoad) {
+      // Don't update search bar if it's an auto-load
+      setSearchBarQuery(query); // Keep SearchBar input in sync if user types
+    }
+    localStorage.setItem("lastSearchQuery", query); // Save to localStorage
+
     setSearchLoading(true);
     setSearchError(null);
-    setSearchResults([]); // Clear previous results immediately
+    setSearchResults([]);
     try {
       const data = await searchMovies(query);
       setSearchResults(data.results);
@@ -68,7 +101,11 @@ const HomePage = () => {
 
   return (
     <div>
-      <SearchBar onSearch={handleSearch} /> {/* Add SearchBar here */}
+      <SearchBar
+        initialQuery={searchBarQuery} // Pass the query from HomePage state
+        onSearch={handleSearch}
+      />
+
       <Typography variant="h4" gutterBottom sx={{ mt: 2, mb: 3 }}>
         {title}
       </Typography>
