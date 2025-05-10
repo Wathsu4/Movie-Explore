@@ -20,6 +20,9 @@ const Navbar = () => {
         <Button color="inherit" component={RouterLink} to="/favorites">
           Favorites
         </Button>
+        <Button color="inherit" component={RouterLink} to="/login">
+          Login
+        </Button>
         <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
           {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>

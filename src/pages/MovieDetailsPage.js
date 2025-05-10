@@ -39,8 +39,8 @@ const MovieDetailsPage = () => {
         const details = await fetchMovieDetails(movieId);
         setMovieDetails(details);
       } catch (err) {
-        setError(`Failed to fetch movie details. Invalid ID or network issue.`);
-        console.error(err);
+        setError(err.message);
+        console.error(err.originalError || err);
       } finally {
         setLoading(false);
       }
