@@ -12,6 +12,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 
 const MovieCard = ({ movie }) => {
+  console.log("Movie Information in movie: ", movie);
   const posterBaseUrl = "https://image.tmdb.org/t/p/w500";
 
   if (!movie || !movie.id || !movie.title) {
@@ -44,13 +45,13 @@ const MovieCard = ({ movie }) => {
         <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
           <Rating
             name="read-only"
-            value={movie.vote_avarage / 2}
+            value={movie.vote_average / 2}
             precision={0.1}
             readOnly
             size="small"
           />
           <Typography variant="body2" color="text.secondary" sx={{ ml: 1 }}>
-            ({movie.vote_avarage ? movie.vote_avarage.toFixed(1) : "N/A"})
+            ({movie.vote_average ? movie.vote_average.toFixed(1) : "N/A"})
           </Typography>
         </Box>
       </CardContent>
