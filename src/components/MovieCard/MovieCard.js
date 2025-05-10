@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Card,
   CardMedia,
@@ -8,16 +8,32 @@ import {
   Button,
   Rating,
   Box,
+  IconButton,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import FavoriteIcon from "@mui/icons-material/Favorite"; // Filled heart
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder"; // Outline heart
+import { FavoritesContext } from "../../contexts/FavoritesContext";
 
 const MovieCard = ({ movie }) => {
   console.log("Movie Information in movie: ", movie);
   const posterBaseUrl = "https://image.tmdb.org/t/p/w500";
+  const { addFavorite, removeFavorite, isFavorite } =
+    useContext(FavoritesContext);
 
   if (!movie || !movie.id || !movie.title) {
     return null;
   }
+
+  const isFav = isFavorite(movie.id);
+
+  const handleFavoriteToggle = () => {
+    if (isFav) {
+      removeFavorite(movie.id);
+    } else {
+      addFavorite(movie); // Pass the whole movie object
+    }
+  };
 
   return (
     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
@@ -55,10 +71,18 @@ const MovieCard = ({ movie }) => {
           </Typography>
         </Box>
       </CardContent>
-      <CardActions>
+      <CardActions sx={{ justifyContent: "space-between" }}>
+        {" "}
         <Button size="small" component={RouterLink} to={`/movie/${movie.id}`}>
           View Details
         </Button>
+        <IconButton
+          onClick={handleFavoriteToggle}
+          aria-label="add to favorites"
+          color={isFav ? "error" : "default"}
+        >
+          {isFav ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+        </IconButton>
       </CardActions>
     </Card>
   );
