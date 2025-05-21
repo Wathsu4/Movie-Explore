@@ -39,8 +39,8 @@ export const CustomThemeProvider = ({ children }) => {
           mode, // This tells MUI whether to use the light or dark palette
           ...(mode === "light"
             ? {
-                // Palette values for light mode (can customize further)
-                primary: { main: "#1976d2" }, // Default MUI blue
+                // Palette values for light mode
+                primary: { main: "#000" }, // Default MUI blue
                 secondary: { main: "#dc004e" }, // Default MUI pink
                 background: { default: "#f4f6f8", paper: "#ffffff" },
               }

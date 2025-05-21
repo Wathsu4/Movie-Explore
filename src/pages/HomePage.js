@@ -1,4 +1,3 @@
-// src/pages/HomePage.js
 import React, { useState, useEffect, useMemo } from "react";
 import {
   Typography,
@@ -13,6 +12,7 @@ import {
   TextField,
   Slider,
   Button,
+  Container,
 } from "@mui/material";
 import {
   fetchTrendingMovies,
@@ -21,6 +21,7 @@ import {
 } from "../services/tmdbService";
 import MovieCard from "../components/MovieCard/MovieCard";
 import SearchBar from "../components/SearchBar/SearchBar";
+import heroBackground from "../assets/hero-background.jpg";
 
 const HomePage = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -225,154 +226,190 @@ const HomePage = () => {
 
   return (
     <div>
-      <SearchBar
-        initialQuery={searchBarQuery} // Pass the query from HomePage state
-        onSearch={handleSearch}
-      />
-
       <Box
         sx={{
-          my: 3,
-          p: 2,
-          backgroundColor: "action.hover",
-          borderRadius: 1,
-          maxWidth: 900,
-          mx: "auto",
+          background: `linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(${heroBackground})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "50vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          padding: "2rem 0",
+          marginBottom: "2rem",
+          color: "white",
         }}
       >
-        <Typography variant="h6" gutterBottom align="center">
-          Filters
-        </Typography>
-        <Grid container spacing={2} alignItems="center" justifyContent="center">
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel id="genre-filter-label">Genre</InputLabel>
-              <Select
-                labelId="genre-filter-label"
-                id="genre-filter"
-                value={selectedGenre}
-                label="Genre"
-                onChange={(e) => setSelectedGenre(e.target.value)}
-                sx={{
-                  minWidth: "160px",
-                  "& .MuiSelect-select": {
-                    width: "100%",
-                    textOverflow: "ellipsis",
-                  },
-                }}
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 300,
-                      minWidth: "200px",
-                    },
-                  },
-                }}
-              >
-                <MenuItem value="">
-                  <em>All Genres</em>
-                </MenuItem>
-                {genres.map((genre) => (
-                  <MenuItem key={genre.id} value={genre.id}>
-                    {genre.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={5}>
-            <Typography gutterBottom sx={{ fontSize: "0.8rem" }} align="center">
-              Rating (TMDb)
-            </Typography>
-            <Slider
-              size="small"
-              value={selectedRating}
-              onChange={(e, newValue) => setSelectedRating(newValue)}
-              valueLabelDisplay="auto"
-              min={0}
-              max={10}
-              step={0.5}
-              marks={[
-                { value: 0, label: "0" },
-                { value: 5, label: "5" },
-                { value: 10, label: "10" },
-              ]}
-            />
-          </Grid>
-        </Grid>
+        <Container maxWidth="lg">
+          <Typography
+            variant="h3"
+            component="h1"
+            sx={{
+              mb: 3,
+              textAlign: "center",
+              textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
+            }}
+          >
+            Discover Movies
+          </Typography>
+          <SearchBar initialQuery={searchBarQuery} onSearch={handleSearch} />
+        </Container>
       </Box>
 
-      <Typography variant="h4" gutterBottom sx={{ mt: 2, mb: 3 }}>
-        {title}
-      </Typography>
-
-      {isLoading && (
-        <CircularProgress sx={{ display: "block", margin: "20px auto" }} />
-      )}
-
-      {errorToShow && !isLoading && (
-        <Alert
-          severity={
-            currentSearchQuery && searchResults.length === 0 && !searchLoading
-              ? "info"
-              : "error"
-          }
-          sx={{ mt: 2 }}
+      <Container maxWidth="lg">
+        <Box
+          sx={{
+            my: 3,
+            p: 2,
+            backgroundColor: "action.hover",
+            borderRadius: 1,
+            maxWidth: 900,
+            mx: "auto",
+          }}
         >
-          {errorToShow}
-        </Alert>
-      )}
-
-      {!isLoading &&
-        !errorToShow &&
-        moviesToDisplay.length === 0 &&
-        currentSearchQuery && (
-          <Typography sx={{ mt: 2 }}>
-            No results found for "{currentSearchQuery}".
+          <Typography variant="h6" gutterBottom align="center">
+            Filters
           </Typography>
-        )}
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="genre-filter-label">Genre</InputLabel>
+                <Select
+                  labelId="genre-filter-label"
+                  id="genre-filter"
+                  value={selectedGenre}
+                  label="Genre"
+                  onChange={(e) => setSelectedGenre(e.target.value)}
+                  sx={{
+                    minWidth: "160px",
+                    "& .MuiSelect-select": {
+                      width: "100%",
+                      textOverflow: "ellipsis",
+                    },
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxHeight: 300,
+                        minWidth: "200px",
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>All Genres</em>
+                  </MenuItem>
+                  {genres.map((genre) => (
+                    <MenuItem key={genre.id} value={genre.id}>
+                      {genre.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
 
-      {!isLoading &&
-        (moviesToDisplay.length > 0 ||
-          (currentSearchQuery && searchResults.length > 0)) && (
-          <Grid container spacing={3}>
-            {moviesToDisplay.map((movie) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={movie.id}>
-                <MovieCard movie={movie} />
-              </Grid>
-            ))}
+            <Grid item xs={12} sm={6} md={5}>
+              <Typography
+                gutterBottom
+                sx={{ fontSize: "0.8rem" }}
+                align="center"
+              >
+                Rating (TMDb)
+              </Typography>
+              <Slider
+                size="small"
+                value={selectedRating}
+                onChange={(e, newValue) => setSelectedRating(newValue)}
+                valueLabelDisplay="auto"
+                min={0}
+                max={10}
+                step={0.5}
+                marks={[
+                  { value: 0, label: "0" },
+                  { value: 5, label: "5" },
+                  { value: 10, label: "10" },
+                ]}
+              />
+            </Grid>
           </Grid>
+        </Box>
+
+        <Typography variant="h4" gutterBottom sx={{ mt: 2, mb: 3 }}>
+          {title}
+        </Typography>
+
+        {isLoading && (
+          <CircularProgress sx={{ display: "block", margin: "20px auto" }} />
         )}
 
-      {currentSearchQuery &&
-        searchResults.length > 0 &&
-        searchCurrentPage < searchTotalPages &&
-        !searchLoading && (
-          <Box textAlign="center" sx={{ mt: 3, mb: 2 }}>
-            <Button
-              variant="contained"
-              onClick={loadMoreMovies}
-              disabled={isAppendingResults}
-            >
-              {isAppendingResults ? (
-                <CircularProgress size={24} color="inherit" />
-              ) : (
-                "Load More Results"
-              )}
-            </Button>
-          </Box>
+        {errorToShow && !isLoading && (
+          <Alert
+            severity={
+              currentSearchQuery && searchResults.length === 0 && !searchLoading
+                ? "info"
+                : "error"
+            }
+            sx={{ mt: 2 }}
+          >
+            {errorToShow}
+          </Alert>
         )}
 
-      {/* If not searching and no trending movies and no error (e.g. initial state before trending loads or if trending fails silently) */}
-      {!isLoading &&
-        !errorToShow &&
-        moviesToDisplay.length === 0 &&
-        !currentSearchQuery && (
-          <Typography sx={{ mt: 2 }}>
-            No trending movies to display at the moment.
-          </Typography>
-        )}
+        {!isLoading &&
+          !errorToShow &&
+          moviesToDisplay.length === 0 &&
+          currentSearchQuery && (
+            <Typography sx={{ mt: 2 }}>
+              No results found for "{currentSearchQuery}".
+            </Typography>
+          )}
+
+        {!isLoading &&
+          (moviesToDisplay.length > 0 ||
+            (currentSearchQuery && searchResults.length > 0)) && (
+            <Grid container spacing={3}>
+              {moviesToDisplay.map((movie) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={movie.id}>
+                  <MovieCard movie={movie} />
+                </Grid>
+              ))}
+            </Grid>
+          )}
+
+        {currentSearchQuery &&
+          searchResults.length > 0 &&
+          searchCurrentPage < searchTotalPages &&
+          !searchLoading && (
+            <Box textAlign="center" sx={{ mt: 3, mb: 2 }}>
+              <Button
+                variant="contained"
+                onClick={loadMoreMovies}
+                disabled={isAppendingResults}
+              >
+                {isAppendingResults ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  "Load More Results"
+                )}
+              </Button>
+            </Box>
+          )}
+
+        {/* If not searching and no trending movies and no error (e.g. initial state before trending loads or if trending fails silently) */}
+        {!isLoading &&
+          !errorToShow &&
+          moviesToDisplay.length === 0 &&
+          !currentSearchQuery && (
+            <Typography sx={{ mt: 2 }}>
+              No trending movies to display at the moment.
+            </Typography>
+          )}
+      </Container>
     </div>
   );
 };

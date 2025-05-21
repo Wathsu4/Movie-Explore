@@ -117,7 +117,6 @@ const MovieDetailsPage = () => {
       </Button>
       <Paper elevation={3} sx={{ p: { xs: 2, md: 4 } }}>
         {" "}
-        {/* Padding responsive xs, md */}
         <Grid container spacing={3}>
           {/* Poster Image */}
           <Grid item xs={12} md={4}>
